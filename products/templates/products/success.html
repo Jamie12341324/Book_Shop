@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Payment Confirmed!{% endblock %}
+ 
+{% block content %}
+<div class="card">
+<div class="icon">✅</div>
+<h1>Payment Successful!</h1>
+<p>Thank you — your order has been confirmed and saved.</p>
+ 
+    {% if order %}
+<div class="detail">
+<p><strong>Order #:</strong> {{ order.id }}</p>
+<p><strong>Product:</strong> {{ order.product.title }}</p>
+<p><strong>Email:</strong> {{ order.customer_email }}</p>
+<p><strong>Amount paid:</strong> {{ order.amount_display }}</p>
+<p><strong>Status:</strong> {{ order.get_status_display }}</p>
+</div>
+    {% endif %}
+ 
+    <p>A receipt email will be sent by Stripe.</p>
+<a href="{% url 'product_list' %}" class="btn btn-secondary">← Back to Shop</a>
+</div>
+{% endblock %}

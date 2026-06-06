@@ -1,8 +1,18 @@
+import stripe
+
 from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.shortcuts import render
 from django.contrib import messages
 from .forms import ProductForm
+from .models import Product
+from .models import Order
+from django.conf import settings
 # Create your views here.
+
+stripe_public_key = settings.STRIPE_PUBLIC_KEY
+stripe_secret_key = settings.STRIPE_SECRET_KEY
+
+stripe.api_key = settings.STRIPE_SECRET_KEY
 
 def add_product(request):
     """ Add a product to the store"""
@@ -26,3 +36,105 @@ def add_product(request):
         'form': form,
     }
     return render(request, template, context)
+
+def view_products(request):
+    template='products/product_list.html'
+    products=Product.objects.values()
+    context = {
+        'products':products,
+    }
+    return render(request,template,context)
+
+def product_details(request,product_id):
+    if request.method=="GET":
+        product=Product.objects.get(id=product_id)
+        template='products/product_detail.html'
+        context={
+            'product':product,
+        }
+        return render(request,template,context)
+    
+def create_checkout_session(request, product_id):
+
+    if request.method != 'POST':
+
+        return redirect('product_list')
+ 
+    product = get_object_or_404(Product, id=product_id)
+
+    try:
+
+        session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            customer_creation='always',
+            line_items=[{
+                'price_data': {
+                    'currency': 'gbp',
+                    'unit_amount_decimal': product.price*100,       # from the database
+                    'product_data': {
+                        'name': product.title,         # from the database
+                        'description': product.description,
+                    },
+                },
+                'quantity': 1,
+            }],
+
+            mode='payment',
+
+            # Store product_id in metadata so success view can look it up
+
+            metadata={'product_id': product.id},
+
+            success_url=(
+                request.build_absolute_uri('/products/success/')
+                + '?session_id={CHECKOUT_SESSION_ID}'
+            ),
+
+            cancel_url=request.build_absolute_uri('/products/cancel/'),
+        )
+
+        return redirect(session.url, code=303)
+ 
+    except stripe.error.StripeError as e:
+
+        return render(request, '/products/error.html', {'error': str(e)})
+    
+def payment_success(request):
+
+    session_id = request.GET.get('session_id')
+
+    order = None
+ 
+    if session_id:
+
+        try:
+
+            session = stripe.checkout.Session.retrieve(session_id)
+ 
+            # Guard: avoid duplicate rows if user refreshes the success page
+
+            if not Order.objects.filter(stripe_session_id=session_id).exists():
+                product_id =  session.metadata['product_id']
+                product    = get_object_or_404(Product, id=product_id)
+                order = Order.objects.create(
+                    product           = product,
+                    stripe_session_id = session_id,
+                    customer_email    = session.customer_details.email,
+                    amount_paid       = session.amount_total,
+                    currency          = session.currency.upper(),
+                    status            = 'complete',
+                )
+
+            else:
+
+                order = Order.objects.get(stripe_session_id=session_id)
+ 
+        except (stripe.error.StripeError, Exception):
+
+            pass
+ 
+    return render(request, 'products/success.html', {'order': order})
+
+def payment_cancel(request):
+
+    return render(request, 'products/cancel.html')

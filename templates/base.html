@@ -1,5 +1,6 @@
 {% load static %}
 
+{% url '../products/templates/products/product_list' as product_list_url %}
 {% url 'home' as home_url %}
 {% url 'about' as about_url %}
 {% url 'account_login' as login_url %}
@@ -9,7 +10,7 @@
 <html class="h-100" lang="en">
 
 <head>
-    <title>Meal Planner</title>
+    <title>Book Shop</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Google Fonts CSS -->
@@ -25,9 +26,10 @@
         integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
     <!-- Custom CSS -->
     <link rel="stylesheet"   href="{% static 'css/style.css' %}" >
+    <!-- <link rel="stylesheet" href="../static/css/style.css"> -->
 </head>
 
-<body class="d-flex flex-column h-100 main-bg">
+<body class="d-flex flex-column h-100 main-bg" style="">
     <div >
         <h1 style="text-align:center; font-family:arial;  color:black; background-color:rgb(142, 199, 142);">Book Shop</h1>
     </div>
@@ -59,6 +61,10 @@
 	                <a class="nav-link {% if request.path == login_url %}active{% endif %}" aria-current="page" href="{% url 'account_login' %}">Login</a>
                     </li>
                     {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == product_list_url %}active{% endif %}" aria-current="page"
+                            href="{% url 'product_list' %}">Product List</a>
+                    </li>
                 </ul>
                 <span class="navbar-text text-muted">
                 </span>

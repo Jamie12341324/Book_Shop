@@ -18,13 +18,55 @@ class Category(models.Model):
 
 class Product(models.Model):
     category = models.ForeignKey('Category', null=True, blank=True, on_delete=models.SET_NULL)
-    sku = models.CharField(max_length=254, null=True, blank=True)
-    name = models.CharField(max_length=254)
+    isbn = models.CharField(max_length=13)
+    title = models.CharField(max_length=254)
+    author = models.CharField(max_length=254)
     description = models.TextField()
-    # has_sizes = models.BooleanField(default=False, null=True, blank=True)
     price = models.DecimalField(max_digits=6, decimal_places=2)
     rating = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)
     featured_image = CloudinaryField('image', default='placeholder')
 
     def __str__(self):
-        return self.name
+        return self.title
+
+class Order(models.Model):
+
+    """A record of a completed Stripe payment."""
+
+    STATUS_CHOICES = [
+
+        ('pending',   'Pending'),
+
+        ('complete',  'Complete'),
+
+        ('cancelled', 'Cancelled'),
+
+    ]
+ 
+    product           = models.ForeignKey(Product, on_delete=models.PROTECT,
+
+                            related_name='orders')
+
+    stripe_session_id = models.CharField(max_length=200, unique=True)
+
+    customer_email    = models.EmailField()
+
+    amount_paid       = models.PositiveIntegerField(help_text="Amount in pence")
+
+    currency          = models.CharField(max_length=3, default='GBP')
+
+    status            = models.CharField(max_length=10, choices=STATUS_CHOICES,
+
+                            default='pending')
+
+    created_at        = models.DateTimeField(auto_now_add=True)
+ 
+    def __str__(self):
+
+        return f"Order #{self.pk} — {self.product.title} ({self.status})"
+ 
+    @property
+
+    def amount_display(self):
+
+        return f"£{self.amount_paid / 100:.2f}"

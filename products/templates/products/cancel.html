@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Payment Cancelled{% endblock %}
+ 
+{% block content %}
+<div class="card">
+<div class="icon">❌</div>
+<h1>Payment Cancelled</h1>
+<p>You cancelled the payment. No charge has been made.</p>
+<a href="{% url 'product_list' %}" class="btn">← Return to Shop</a>
+</div>
+{% endblock %}

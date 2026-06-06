@@ -1,0 +1,22 @@
+/* background image */
+#home_background_image {
+    background-image: url(../images/images_for_site/book_shop_home.png);
+    width:100vw;
+    height:100vh;
+}
+/* centering divs  */
+.home_text{
+    text-align:center;
+    margin:auto;
+}
+/* Translucent green overlay and white text to help text stand out */
+.container_margin{
+    margin-top:10px;
+    background-color: rgba(0, 255, 42, 0.5);
+    color:white;
+    
+}
+.detail_box{
+    background-color: rgba(0, 0, 0, 0.5);
+    color:white;
+}
