@@ -144,13 +144,15 @@ def payment_cancel(request):
 @csrf_exempt
 def stripe_webhook(request):
 
+    return HttpResponse(status=200)
+
     payload    = request.body
 
     sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
 
     secret     = settings.STRIPE_WEBHOOK_SECRET
  
-    return HttpResponse(status=200)
+ 
 
     # ── Step 1: Verify the event came from Stripe ──────────────────
 
