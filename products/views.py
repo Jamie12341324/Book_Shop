@@ -1,4 +1,5 @@
 import stripe
+from django.views.decorators.csrf import csrf_exempt
 
 from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.shortcuts import render
@@ -140,6 +141,7 @@ def payment_cancel(request):
 
     return render(request, 'products/cancel.html')
 
+@csrf_exempt
 def stripe_webhook(request):
 
     payload    = request.body
