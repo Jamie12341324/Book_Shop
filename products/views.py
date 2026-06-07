@@ -220,7 +220,7 @@ def stripe_webhook(request):
 
                         currency          = session['currency'].upper(),
 
-                        status            = 'complete',
+                        status            = 'completed',
 
                     )
 
