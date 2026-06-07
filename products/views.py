@@ -7,6 +7,7 @@ from .forms import ProductForm
 from .models import Product
 from .models import Order
 from django.conf import settings
+from django.http import HttpResponse
 # Create your views here.
 
 stripe_public_key = settings.STRIPE_PUBLIC_KEY
@@ -138,3 +139,108 @@ def payment_success(request):
 def payment_cancel(request):
 
     return render(request, 'products/cancel.html')
+
+def stripe_webhook(request):
+
+    payload    = request.body
+
+    sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
+
+    secret     = settings.STRIPE_WEBHOOK_SECRET
+ 
+    # ── Step 1: Verify the event came from Stripe ──────────────────
+
+    try:
+
+        event = stripe.Webhook.construct_event(
+
+            payload, sig_header, secret
+
+        )
+
+    except ValueError:
+
+        # Invalid payload
+
+        return HttpResponse(status=400)
+
+    except stripe.error.SignatureVerificationError:
+
+        # Invalid signature — request did not come from Stripe
+
+        return HttpResponse(status=400)
+ 
+    # ── Step 2: Handle the event type ──────────────────────────────
+
+    if event['type'] == 'checkout.session.completed':
+
+        session    = event['data']['object']
+
+        session_id = session['id']
+ 
+        if not Order.objects.filter(stripe_session_id=session_id).exists():
+
+            try:
+
+                product_id = session['metadata']['product_id']
+
+            except (KeyError, TypeError):
+
+                    product_id = None
+
+            if not product_id:
+
+                    print("ℹ️ No product_id in metadata — skipping order creation")
+
+            else:
+
+                    product = Product.objects.get(id=product_id)
+
+                    Order.objects.create(...)
+
+            if not product_id:
+
+                print("ℹ️ Webhook: no product_id in metadata (test trigger?), skipping.")
+
+            else:
+
+                try:
+
+                    product = Product.objects.get(id=product_id)
+
+                    Order.objects.create(
+
+                        product           = product,
+
+                        stripe_session_id = session_id,
+
+                        customer_email    = session['customer_details']['email'],
+
+                        amount_paid       = session['amount_total'],
+
+                        currency          = session['currency'].upper(),
+
+                        status            = 'complete',
+
+                    )
+
+                    print(f"✅ Webhook: Order created for {product.name}")
+
+                except Product.DoesNotExist:
+
+                    print(f"❌ Webhook: Product {product_id} not found")
+ 
+    elif event['type'] == 'payment_intent.payment_failed':
+
+        session = event['data']['object']
+
+        print(f"❌ Payment failed: {session.get('last_payment_error', {}).get('message')}")
+ 
+    else:
+
+        print(f"ℹ️  Unhandled event type: {event['type']}")
+ 
+    # ── Step 3: Always return 200 so Stripe knows we received it ───
+
+    return HttpResponse(status=200)
+
