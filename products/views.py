@@ -143,31 +143,31 @@ def payment_cancel(request):
 @csrf_exempt
 def stripe_webhook(request):
 
+
     payload    = request.body
     sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
     secret     = settings.STRIPE_WEBHOOK_SECRET
-    #secret     = "test"
-
-    event = stripe.Webhook.construct_event(
-        payload, sig_header, secret
-    )
-    session    = event['data']['object']
-    session_id = session['id']
-    product_id = session['metadata']['product_id']
-    product = Product.objects.get(id=product_id)
-    Order.objects.create(
-                        product           = product,
-                        stripe_session_id = session_id,
-                        customer_email    = session['customer_details']['email'],
-                        amount_paid       = session['amount_total'],
-                        currency          = session['currency'].upper(),
-                        status            = 'confirmed',
-                    )
- 
+                
+    if False:
+        event = stripe.Webhook.construct_event(
+            payload, sig_header, secret
+        )
+        session    = event['data']['object']
+        session_id = session['id']
+        product_id = session['metadata']['product_id']
+        product = Product.objects.get(id=product_id)
+        Order.objects.create(
+                            product           = product,
+                            stripe_session_id = session_id,
+                            customer_email    = session['customer_details']['email'],
+                            amount_paid       = session['amount_total'],
+                            currency          = session['currency'].upper(),
+                            status            = 'confirmed1',
+                        )
+    
     # ── Step 1: Verify the event came from Stripe ──────────────────
 
     try:
-
         event = stripe.Webhook.construct_event(
             payload, sig_header, secret
         )
@@ -218,7 +218,7 @@ def stripe_webhook(request):
                         customer_email    = session['customer_details']['email'],
                         amount_paid       = session['amount_total'],
                         currency          = session['currency'].upper(),
-                        status            = 'confirmed',
+                        status            = 'confirmed2',
                     )
 
                     print_msg = (f"✅ Webhook: Order created for {product.name}")
