@@ -180,7 +180,7 @@ def stripe_webhook(request):
         # Invalid signature — request did not come from Stripe
         return HttpResponse(status=400)
  
-    return HttpResponse(status=200)
+    #return HttpResponse(status=200)
 
     # ── Step 2: Handle the event type ──────────────────────────────
 
@@ -198,13 +198,14 @@ def stripe_webhook(request):
                     product_id = None
 
             if not product_id:
-                    print("ℹ️ No product_id in metadata — skipping order creation")
+                    print_msg = ("ℹ️ No product_id in metadata — skipping order creation")
             else:
                     product = Product.objects.get(id=product_id)
                     Order.objects.create(...)
             if not product_id:
 
-                print("ℹ️ Webhook: no product_id in metadata (test trigger?), skipping.")
+                print_msg = ("ℹ️ Webhook: no product_id in metadata (test trigger?), skipping.")
+
 
             else:
 
@@ -220,21 +221,21 @@ def stripe_webhook(request):
                         status            = 'confirmed',
                     )
 
-                    print(f"✅ Webhook: Order created for {product.name}")
+                    print_msg = (f"✅ Webhook: Order created for {product.name}")
 
                 except Product.DoesNotExist:
 
-                    print(f"❌ Webhook: Product {product_id} not found")
+                    print_msg = (f"❌ Webhook: Product {product_id} not found")
  
     elif event['type'] == 'payment_intent.payment_failed':
 
         session = event['data']['object']
 
-        print(f"❌ Payment failed: {session.get('last_payment_error', {}).get('message')}")
+        print_msg = (f"❌ Payment failed: {session.get('last_payment_error', {}).get('message')}")
  
     else:
 
-        print(f"ℹ️  Unhandled event type: {event['type']}")
+        print_msg = (f"ℹ️  Unhandled event type: {event['type']}")
  
     # ── Step 3: Always return 200 so Stripe knows we received it ───
 
