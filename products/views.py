@@ -15,28 +15,28 @@ stripe_secret_key = settings.STRIPE_SECRET_KEY
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
-def add_product(request):
-    """ Add a product to the store"""
-    if not request.user.is_superuser:
-        messages.error(request, 'Sorry, only store owners an do that')
-        # return redirect(reverse('home'))
-    if request.method=='POST':
-        form = ProductForm(request.POST, request.FILES)
-        if form.is_valid():
-            product = form.save()
-            messages.success(request, 'Successfully added product!')
-            # return redirect(reverse('product_detail', args=[product.id]))
-        else:
-            messages.error(request, 'Failed to add product. Please ensure form is valid.')
-    else:
-        form=ProductForm()
+# def add_product(request):
+#     """ Add a product to the store"""
+#     if not request.user.is_superuser:
+#         messages.error(request, 'Sorry, only store owners an do that')
+#         # return redirect(reverse('home'))
+#     if request.method=='POST':
+#         form = ProductForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             product = form.save()
+#             messages.success(request, 'Successfully added product!')
+#             # return redirect(reverse('product_detail', args=[product.id]))
+#         else:
+#             messages.error(request, 'Failed to add product. Please ensure form is valid.')
+#     else:
+#         form=ProductForm()
 
-    form = ProductForm()
-    template ='products/add_products.html'
-    context = {
-        'form': form,
-    }
-    return render(request, template, context)
+#     form = ProductForm()
+#     template ='products/add_products.html'
+#     context = {
+#         'form': form,
+#     }
+#     return render(request, template, context)
 
 def view_products(request):
     template='products/product_list.html'
@@ -161,61 +161,47 @@ def stripe_webhook(request):
                         customer_email    = session['customer_details']['email'],
                         amount_paid       = session['amount_total'],
                         currency          = session['currency'].upper(),
-                        status            = 'completed',
+                        status            = 'confirmed',
                     )
-
-    return HttpResponse(status=200)
  
     # ── Step 1: Verify the event came from Stripe ──────────────────
 
     try:
 
         event = stripe.Webhook.construct_event(
-
             payload, sig_header, secret
-
         )
 
     except ValueError:
-
         # Invalid payload
-
         return HttpResponse(status=400)
 
     except stripe.error.SignatureVerificationError:
-
         # Invalid signature — request did not come from Stripe
-
         return HttpResponse(status=400)
  
+    return HttpResponse(status=200)
+
     # ── Step 2: Handle the event type ──────────────────────────────
 
     if event['type'] == 'checkout.session.completed':
 
         session    = event['data']['object']
-
         session_id = session['id']
  
         if not Order.objects.filter(stripe_session_id=session_id).exists():
 
             try:
-
                 product_id = session['metadata']['product_id']
 
             except (KeyError, TypeError):
-
                     product_id = None
 
             if not product_id:
-
                     print("ℹ️ No product_id in metadata — skipping order creation")
-
             else:
-
                     product = Product.objects.get(id=product_id)
-
                     Order.objects.create(...)
-
             if not product_id:
 
                 print("ℹ️ Webhook: no product_id in metadata (test trigger?), skipping.")
@@ -225,21 +211,13 @@ def stripe_webhook(request):
                 try:
 
                     product = Product.objects.get(id=product_id)
-
                     Order.objects.create(
-
                         product           = product,
-
                         stripe_session_id = session_id,
-
                         customer_email    = session['customer_details']['email'],
-
                         amount_paid       = session['amount_total'],
-
                         currency          = session['currency'].upper(),
-
-                        status            = 'completed',
-
+                        status            = 'confirmed',
                     )
 
                     print(f"✅ Webhook: Order created for {product.name}")

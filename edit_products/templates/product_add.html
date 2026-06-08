@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<form method="POST">
+            {% csrf_token %}
+            <div class="container home_text">
+                <div class="row">
+                    <div class="col-lg-6 col-md-8 col-sm-12 detail_box margin_extra">
+                    <label for="isbn">isbn</label>
+                    <input name="isbn" type="text" id="isbn">
+                    <label for="title">Title:</label>
+                    <input name="title" type="text" id="title">
+                    <label for="author">Author:</label>
+                    <input name="author" type="text" id="author">
+                    <label for="rating">Rating:</label>
+                    <input name="rating" type="text" id="rating">
+                    <label for="description">Description:</label>
+                    <input name="description" type="text" id="description">
+                    <label for="price">Price:</label>
+                    <input name="price" type="text" id="price">
+                    <!-- bootstrap button class (btn-success) used to style a buy now button -->
+                    <button type="submit" class="btn btn-success">Create product</button>
+                    </div>
+                    <!-- extra blank div to make space on one side of the screen -->
+                    <div class="col-2 margin_extra">
+                    </div>
+                </div>
+            </div>
+</form>
+{% endblock %}
