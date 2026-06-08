@@ -145,8 +145,8 @@ def stripe_webhook(request):
 
     payload    = request.body
     sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
-    #secret     = settings.STRIPE_WEBHOOK_SECRET
-    secret     = "test"
+    secret     = settings.STRIPE_WEBHOOK_SECRET
+    #secret     = "test"
     
     return HttpResponse(status=200)
  
