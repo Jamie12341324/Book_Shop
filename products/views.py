@@ -1,6 +1,5 @@
 import stripe
 from django.views.decorators.csrf import csrf_exempt
-
 from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.shortcuts import render
 from django.contrib import messages
@@ -144,16 +143,11 @@ def payment_cancel(request):
 @csrf_exempt
 def stripe_webhook(request):
 
-    return HttpResponse(status=200)
-
     payload    = request.body
-
+    return HttpResponse(status=200)
     sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
-
     secret     = settings.STRIPE_WEBHOOK_SECRET
  
- 
-
     # ── Step 1: Verify the event came from Stripe ──────────────────
 
     try:
