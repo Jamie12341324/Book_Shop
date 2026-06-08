@@ -144,10 +144,11 @@ def payment_cancel(request):
 def stripe_webhook(request):
 
     payload    = request.body
-    secret     = settings.STRIPE_WEBHOOK_SECRET
     sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
+    #secret     = settings.STRIPE_WEBHOOK_SECRET
+    secret     = "testing"
     
-    #return HttpResponse(status=200)
+    return HttpResponse(status=200)
  
     # ── Step 1: Verify the event came from Stripe ──────────────────
 
