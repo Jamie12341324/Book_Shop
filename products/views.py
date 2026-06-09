@@ -177,8 +177,6 @@ def stripe_webhook(request):
         session    = event['data']['object']
         session_id = session['id']
 
-        
- 
         if not Order.objects.filter(stripe_session_id=session_id).exists():
 
             try:
@@ -204,8 +202,8 @@ def stripe_webhook(request):
                     product = Product.objects.get(id=product_id)
                     shipping = session.get("shipping_details")
                     name = "?"
-                    if shipping:
-                        name = shipping.get("name")
+                    #if shipping:
+                    #    name = shipping.get("name")
 
                     Order.objects.create(
                         product           = product,
@@ -214,7 +212,7 @@ def stripe_webhook(request):
                         amount_paid       = session['amount_total'],
                         currency          = session['currency'].upper(),
                         status            = 'confirmed2',
-                        shipping_address_name = name,
+                        
                     )
 
                     print_msg = (f"✅ Webhook: Order created for {product.name}")
