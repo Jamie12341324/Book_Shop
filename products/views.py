@@ -136,7 +136,7 @@ def stripe_webhook(request):
     sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
     secret     = settings.STRIPE_WEBHOOK_SECRET
                 
-    if False:
+    if True:
         event = stripe.Webhook.construct_event(
             payload, sig_header, secret
         )
@@ -144,13 +144,20 @@ def stripe_webhook(request):
         session_id = session['id']
         product_id = session['metadata']['product_id']
         product = Product.objects.get(id=product_id)
+
+        shipping = session.get("shipping_details")
+        name = "?"
+        if shipping:
+            name = shipping.get("name")
+            
         Order.objects.create(
                             product           = product,
                             stripe_session_id = session_id,
                             customer_email    = session['customer_details']['email'],
                             amount_paid       = session['amount_total'],
                             currency          = session['currency'].upper(),
-                            status            = 'confirmed1',
+                            status            = 'confirmed',
+                            shipping_address_name = name,
                         )
     
     # ── Step 1: Verify the event came from Stripe ──────────────────
@@ -200,8 +207,8 @@ def stripe_webhook(request):
                 try:
 
                     product = Product.objects.get(id=product_id)
-                    shipping = session.get("shipping_details")
-                    name = "?"
+                    #shipping = session.get("shipping_details")
+                    #name = "?"
                     #if shipping:
                     #    name = shipping.get("name")
 
