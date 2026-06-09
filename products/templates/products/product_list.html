@@ -10,6 +10,10 @@
             <img class="card-img-top scale image-sizer" src="https://covers.openlibrary.org/b/isbn/{{ product.isbn }}-L.jpg"
             alt="{{product.title}}">
             </a>
+            {% if request.user.is_staff %}
+            <a href="{% url 'product_edit' product.id %}" class="btn btn-primary">Edit</a>
+            <a href="{% url 'product_delete' product.id %}" class="btn btn-primary">Delete</a>
+            {% endif %}
             <h2>Title: {{product.title}}</h2>
             <h3>Author: {{product.author}}</h3>
             <h3>Rating: {{product.rating}}</h3>

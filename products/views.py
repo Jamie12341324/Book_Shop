@@ -8,6 +8,7 @@ from .models import Product
 from .models import Order
 from django.conf import settings
 from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 stripe_public_key = settings.STRIPE_PUBLIC_KEY
@@ -15,30 +16,7 @@ stripe_secret_key = settings.STRIPE_SECRET_KEY
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
-# def add_product(request):
-#     """ Add a product to the store"""
-#     if not request.user.is_superuser:
-#         messages.error(request, 'Sorry, only store owners an do that')
-#         # return redirect(reverse('home'))
-#     if request.method=='POST':
-#         form = ProductForm(request.POST, request.FILES)
-#         if form.is_valid():
-#             product = form.save()
-#             messages.success(request, 'Successfully added product!')
-#             # return redirect(reverse('product_detail', args=[product.id]))
-#         else:
-#             messages.error(request, 'Failed to add product. Please ensure form is valid.')
-#     else:
-#         form=ProductForm()
-
-#     form = ProductForm()
-#     template ='products/add_products.html'
-#     context = {
-#         'form': form,
-#     }
-#     return render(request, template, context)
-
-def view_products(request):
+def product_list(request):
     template='products/product_list.html'
     products=Product.objects.values()
     context = {
@@ -46,6 +24,7 @@ def view_products(request):
     }
     return render(request,template,context)
 
+@login_required(login_url="/accounts/login/")
 def product_details(request,product_id):
     if request.method=="GET":
         product=Product.objects.get(id=product_id)
@@ -65,9 +44,11 @@ def create_checkout_session(request, product_id):
 
     try:
 
-        session = stripe.checkout.Session.create(
+        session = stripe.checkout.Session.create(    
             payment_method_types=['card'],
             customer_creation='always',
+            billing_address_collection='required',
+            shipping_address_collection={"allowed_countries": ["GB", "US"]},
             line_items=[{
                 'price_data': {
                     'currency': 'gbp',
@@ -107,13 +88,17 @@ def payment_success(request):
     order = None
  
     if session_id:
-
+        #session = stripe.checkout.Session.retrieve(session_id)
+        #shipping_address = shipping.address
+        #print('shipping code' + shipping["postal_code"])
         try:
 
             session = stripe.checkout.Session.retrieve(session_id)
- 
+            #shipping = session.shipping_details
+            #shipping_address = shipping.address
+    
             # Guard: avoid duplicate rows if user refreshes the success page
-
+            # print('address' + session.shipping_details.address)
             if not Order.objects.filter(stripe_session_id=session_id).exists():
                 product_id =  session.metadata['product_id']
                 product    = get_object_or_404(Product, id=product_id)
@@ -124,6 +109,10 @@ def payment_success(request):
                     amount_paid       = session.amount_total,
                     currency          = session.currency.upper(),
                     status            = 'complete',
+             #       shipping_address_name = shipping["name"],
+             #       shipping_address = shipping_address["address"]["line1"],
+             #       shipping_address_postcode = shipping["postal_code"],
+             #       shipping_address_country = shipping["country"],
                 )
 
             else:
@@ -131,7 +120,6 @@ def payment_success(request):
                 order = Order.objects.get(stripe_session_id=session_id)
  
         except (stripe.error.StripeError, Exception):
-
             pass
  
     return render(request, 'products/success.html', {'order': order})
@@ -188,6 +176,8 @@ def stripe_webhook(request):
 
         session    = event['data']['object']
         session_id = session['id']
+
+        
  
         if not Order.objects.filter(stripe_session_id=session_id).exists():
 
@@ -212,6 +202,11 @@ def stripe_webhook(request):
                 try:
 
                     product = Product.objects.get(id=product_id)
+                    shipping = session.get("shipping_details")
+                    name = ""
+                    if shipping:
+                        name = shipping.get("name")
+
                     Order.objects.create(
                         product           = product,
                         stripe_session_id = session_id,
@@ -219,6 +214,8 @@ def stripe_webhook(request):
                         amount_paid       = session['amount_total'],
                         currency          = session['currency'].upper(),
                         status            = 'confirmed2',
+                        shipping_address_name = shipping["name"],
+
                     )
 
                     print_msg = (f"✅ Webhook: Order created for {product.name}")

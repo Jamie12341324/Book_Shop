@@ -2,6 +2,7 @@
 
 {% url '../products/templates/products/product_list' as product_list_url %}
 {% url '../edit_products/templates/product_add' as product_add_url %}
+{% url '../edit_products/templates/product_edit' as product_edit_url %}
 
 {% url 'home' as home_url %}
 {% url 'about' as about_url %}
@@ -67,12 +68,12 @@
                         <a class="nav-link {% if request.path == product_list_url %}active{% endif %}" aria-current="page"
                             href="{% url 'product_list' %}">Product List</a>
                     </li>
-                    
+                    {% if request.user.is_staff %}
                     <li class="nav-item">
                         <a class="nav-link {% if request.path == product_add_url %}active{% endif %}" aria-current="page"
                             href="{% url 'product_add' %}">Add product</a>
                     </li>
-                    
+                    {% endif %}
                 </ul>
                 <span class="navbar-text text-muted">
                 </span>
