@@ -136,7 +136,7 @@ def stripe_webhook(request):
     sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
     secret     = settings.STRIPE_WEBHOOK_SECRET
                 
-    if True:
+    if False:
         event = stripe.Webhook.construct_event(
             payload, sig_header, secret
         )
@@ -149,7 +149,7 @@ def stripe_webhook(request):
         name = "?"
         if shipping:
             name = shipping.get("name")
-            
+
         Order.objects.create(
                             product           = product,
                             stripe_session_id = session_id,
@@ -218,7 +218,7 @@ def stripe_webhook(request):
                         customer_email    = session['customer_details']['email'],
                         amount_paid       = session['amount_total'],
                         currency          = session['currency'].upper(),
-                        status            = 'confirmed2',
+                        status            = 'confirmed',
                         
                     )
 
