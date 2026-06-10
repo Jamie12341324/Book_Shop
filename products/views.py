@@ -195,8 +195,12 @@ def stripe_webhook(request):
                             amount_paid       = session['amount_total'],
                             currency          = session['currency'].upper(),
                             status            = 'confirmed',
-                            shipping_address_name = session['customer_details']['name'],
-                            shipping_address_city = session['customer_details']['address']['city'],
+                            billing_address_name  = session['customer_details']['name'],
+                            billing_address_city  = session['customer_details']['address']['city'],
+                            billing_address_postcode  = session['customer_details']['address']['postal_code'],
+                            shipping_address_name = session['collected_information']['shipping_details']['name'],
+                            shipping_address_city = session['collected_information']['shipping_details']['address']['city'],
+                            shipping_address_postcode = session['collected_information']['shipping_details']['address']['postal_code'],
                         )
 
         return HttpResponse(status=200)
