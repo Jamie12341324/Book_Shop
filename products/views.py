@@ -186,7 +186,7 @@ def stripe_webhook(request):
         #if shipping:
         #    name = shipping.get("name")
 
-        return HttpResponse(status=200)
+        #return HttpResponse(status=200)
 
         Order.objects.create(
                             product           = product,
