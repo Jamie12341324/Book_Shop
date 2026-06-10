@@ -104,7 +104,7 @@ def payment_success(request):
             shipping_name    = session.collected_information.shipping_details.name
             # Deal with possible null line2 value
             shipping_address_line2 = shipping_address.line2
-            print(shipping_address_line2)
+            #print(shipping_address_line2)
             if shipping_address_line2 == None:
                 shipping_address_line2 = ""
 
@@ -112,7 +112,7 @@ def payment_success(request):
             billing_name    = session.customer_details.name
             # Deal with possible null line2 value
             billing_address_line2 = billing_address.line2
-            print(billing_address_line2)
+            #print(billing_address_line2)
             if billing_address_line2 == None:
                 billing_address_line2 = ""
 
@@ -141,19 +141,19 @@ def payment_success(request):
                     billing_address_postcode = billing_address.postal_code,
                 )
                 print('session2')
-            else:
-                print(session.amount_total)
-                product_to_change=Product.objects.get(Q(id=product_id))
-                order = Order.objects.get(Q(stripe_session_id=session_id))
-                order.product = product
-                order.stripe_session_id = session_id,
-                order.customer_email    = session.customer_details.email,
-                #order.amount_paid       = session.amount_total,
-                order.currency          = session.currency.upper(),
-                order.status            = 'complete2',
-                order.shipping_address_name = 'name',               
-                order.save()
-                print("print session3")
+            #else:
+            #    print(session.amount_total)
+            #    product_to_change=Product.objects.get(Q(id=product_id))
+            #    order = Order.objects.get(Q(stripe_session_id=session_id))
+            #    order.product = product
+            #    order.stripe_session_id = session_id,
+            #    order.customer_email    = session.customer_details.email,
+            #    #order.amount_paid       = session.amount_total,
+            #    order.currency          = session.currency.upper(),
+            #    order.status            = 'complete2',
+            #    order.shipping_address_name = 'name',               
+            #    order.save()
+            #    print("print session3")
  
         except (stripe.error.StripeError, Exception):
             pass
@@ -171,7 +171,7 @@ def stripe_webhook(request):
     sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
     secret     = settings.STRIPE_WEBHOOK_SECRET
                 
-    if True:
+    if False:
         event = stripe.Webhook.construct_event(
             payload, sig_header, secret
         )
@@ -180,13 +180,6 @@ def stripe_webhook(request):
         product_id = session['metadata']['product_id']
         product = Product.objects.get(id=product_id)
 
-        #print(session)
-        #shipping = session.get("shipping_details")
-        #name = "?"
-        #if shipping:
-        #    name = shipping.get("name")
-
-        #return HttpResponse(status=200)
         # Deal with possible null line2 which is optional
         
         shipping_line2 = session['collected_information']['shipping_details']['address']['line2']
@@ -269,20 +262,50 @@ def stripe_webhook(request):
                 try:
 
                     product = Product.objects.get(id=product_id)
-                    #shipping = session.get("shipping_details")
-                    #name = "?"
-                    #if shipping:
-                    #    name = shipping.get("name")
+                    session    = event['data']['object']
+                    session_id = session['id']
+                    product_id = session['metadata']['product_id']
+
+                    # Deal with possible null line2 which is optional
+        
+                    shipping_line2 = session['collected_information']['shipping_details']['address']['line2']
+                    if shipping_line2 == None:
+                        shipping_line2 = ""
+
+                    billing_line2 = session['customer_details']['address']['line2']
+                    if billing_line2 == None:
+                        billing_line2 = ""
 
                     Order.objects.create(
-                        product           = product,
-                        stripe_session_id = session_id,
-                        customer_email    = session['customer_details']['email'],
-                        amount_paid       = session['amount_total'],
-                        currency          = session['currency'].upper(),
-                        status            = 'confirmed',
-                        
-                    )
+                            product           = product,
+                            stripe_session_id = session_id,
+                            customer_email    = session['customer_details']['email'],
+                            amount_paid       = session['amount_total'],
+                            currency          = session['currency'].upper(),
+                            status            = 'confirmed',
+                            billing_address_name      = session['customer_details']['name'],
+                            billing_address_line1     = session['customer_details']['address']['line1'],
+                            billing_address_line2     = billing_line2,
+                            billing_address_city      = session['customer_details']['address']['city'],
+                            billing_address_postcode  = session['customer_details']['address']['postal_code'],
+                            billing_address_country   = session['customer_details']['address']['country'],
+
+                            shipping_address_name     = session['collected_information']['shipping_details']['name'],
+                            shipping_address_line1    = session['collected_information']['shipping_details']['address']['line1'],
+                            shipping_address_line2    = shipping_line2,
+                            shipping_address_city     = session['collected_information']['shipping_details']['address']['city'],
+                            shipping_address_postcode = session['collected_information']['shipping_details']['address']['postal_code'],
+                            shipping_address_country  = session['collected_information']['shipping_details']['address']['country'],
+                        )
+
+                    #Order.objects.create(
+                    #    product           = product,
+                    #    stripe_session_id = session_id,
+                    #    customer_email    = session['customer_details']['email'],
+                    #    amount_paid       = session['amount_total'],
+                    #    currency          = session['currency'].upper(),
+                    #    status            = 'confirmed',   
+                    #)
 
                     print_msg = (f"✅ Webhook: Order created for {product.name}")
 
