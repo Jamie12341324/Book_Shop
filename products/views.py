@@ -251,7 +251,7 @@ def stripe_webhook(request):
                     print_msg = ("ℹ️ No product_id in metadata — skipping order creation")
             else:
                     product = Product.objects.get(id=product_id)
-                    Order.objects.create(...)
+                    #Order.objects.create(...)
             if not product_id:
 
                 print_msg = ("ℹ️ Webhook: no product_id in metadata (test trigger?), skipping.")
