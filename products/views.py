@@ -6,6 +6,7 @@ from django.contrib import messages
 from .forms import ProductForm
 from .models import Product
 from .models import Order
+from django.db.models import Q
 from django.conf import settings
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
@@ -86,7 +87,9 @@ def payment_success(request):
     session_id = request.GET.get('session_id')
 
     order = None
- 
+    print('session1')
+    session = stripe.checkout.Session.retrieve(session_id)
+    #print(session)
     if session_id:
         #session = stripe.checkout.Session.retrieve(session_id)
         #shipping_address = shipping.address
@@ -94,14 +97,16 @@ def payment_success(request):
         try:
 
             session = stripe.checkout.Session.retrieve(session_id)
+            product_id = session['metadata']['product_id']
+            product = Product.objects.get(id=product_id)
+
             #shipping = session.shipping_details
             #shipping_address = shipping.address
     
             # Guard: avoid duplicate rows if user refreshes the success page
             # print('address' + session.shipping_details.address)
+            
             if not Order.objects.filter(stripe_session_id=session_id).exists():
-                product_id =  session.metadata['product_id']
-                product    = get_object_or_404(Product, id=product_id)
                 order = Order.objects.create(
                     product           = product,
                     stripe_session_id = session_id,
@@ -109,15 +114,25 @@ def payment_success(request):
                     amount_paid       = session.amount_total,
                     currency          = session.currency.upper(),
                     status            = 'complete',
-             #       shipping_address_name = shipping["name"],
+                    shipping_address_name = 'name',
              #       shipping_address = shipping_address["address"]["line1"],
              #       shipping_address_postcode = shipping["postal_code"],
              #       shipping_address_country = shipping["country"],
                 )
-
+                print('session2')
             else:
-
-                order = Order.objects.get(stripe_session_id=session_id)
+                print(session.amount_total)
+                product_to_change=Product.objects.get(Q(id=product_id))
+                order = Order.objects.get(Q(stripe_session_id=session_id))
+                order.product = product
+                order.stripe_session_id = session_id,
+                order.customer_email    = session.customer_details.email,
+                #order.amount_paid       = session.amount_total,
+                order.currency          = session.currency.upper(),
+                order.status            = 'complete2',
+                order.shipping_address_name = 'name',
+                order.save()
+                print("print session3")
  
         except (stripe.error.StripeError, Exception):
             pass
@@ -145,10 +160,13 @@ def stripe_webhook(request):
         product_id = session['metadata']['product_id']
         product = Product.objects.get(id=product_id)
 
+        #print(session)
         #shipping = session.get("shipping_details")
         #name = "?"
         #if shipping:
         #    name = shipping.get("name")
+
+        return HttpResponse(status=200)
 
         Order.objects.create(
                             product           = product,
@@ -157,7 +175,7 @@ def stripe_webhook(request):
                             amount_paid       = session['amount_total'],
                             currency          = session['currency'].upper(),
                             status            = 'confirmed',
-         #                   shipping_address_name = name,
+                            shipping_address_name = 'name',
                         )
 
         return HttpResponse(status=200)

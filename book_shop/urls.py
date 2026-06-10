@@ -19,6 +19,7 @@ from django.urls import path, include
 from django.shortcuts import render
 from django.http import HttpResponse
 from book_shop.views import home 
+from products.views import stripe_webhook
 
 urlpatterns = [
     path('', home, name = "home" ),
@@ -27,4 +28,5 @@ urlpatterns = [
     path("accounts/", include("allauth.urls")),
     path('products/', include('products.urls')),
     path('edit_products/', include('edit_products.urls')),
+    #path('checkout/wh/', stripe_webhook, name='stripe_checkout_webhook'),
 ]
