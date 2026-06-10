@@ -100,9 +100,22 @@ def payment_success(request):
             product_id = session['metadata']['product_id']
             product = Product.objects.get(id=product_id)
 
-            #shipping = session.shipping_details
-            #shipping_address = shipping.address
-    
+            shipping_address = session.collected_information.shipping_details.address
+            shipping_name    = session.collected_information.shipping_details.name
+            # Deal with possible null line2 value
+            shipping_address_line2 = shipping_address.line2
+            print(shipping_address_line2)
+            if shipping_address_line2 == None:
+                shipping_address_line2 = ""
+
+            billing_address = session.customer_details.address
+            billing_name    = session.customer_details.name
+            # Deal with possible null line2 value
+            billing_address_line2 = billing_address.line2
+            print(billing_address_line2)
+            if billing_address_line2 == None:
+                billing_address_line2 = ""
+
             # Guard: avoid duplicate rows if user refreshes the success page
             # print('address' + session.shipping_details.address)
             
@@ -114,10 +127,18 @@ def payment_success(request):
                     amount_paid       = session.amount_total,
                     currency          = session.currency.upper(),
                     status            = 'complete',
-                    shipping_address_name = 'name',
-             #       shipping_address = shipping_address["address"]["line1"],
-             #       shipping_address_postcode = shipping["postal_code"],
-             #       shipping_address_country = shipping["country"],
+                    shipping_address_name = shipping_name,
+                    shipping_address_line1 = shipping_address.line1,
+                    shipping_address_line2 = shipping_address_line2,
+                    shipping_address_city = shipping_address.city,
+                    shipping_address_country = shipping_address.country,
+                    shipping_address_postcode = shipping_address.postal_code,
+                    billing_address_name = billing_name,
+                    billing_address_line1 = billing_address.line1,
+                    billing_address_line2 = billing_address_line2,
+                    billing_address_city = billing_address.city,
+                    billing_address_country = billing_address.country,
+                    billing_address_postcode = billing_address.postal_code,
                 )
                 print('session2')
             else:
@@ -130,7 +151,7 @@ def payment_success(request):
                 #order.amount_paid       = session.amount_total,
                 order.currency          = session.currency.upper(),
                 order.status            = 'complete2',
-                order.shipping_address_name = 'name',
+                order.shipping_address_name = 'name',               
                 order.save()
                 print("print session3")
  
@@ -145,7 +166,6 @@ def payment_cancel(request):
 
 @csrf_exempt
 def stripe_webhook(request):
-
 
     payload    = request.body
     sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
@@ -175,7 +195,8 @@ def stripe_webhook(request):
                             amount_paid       = session['amount_total'],
                             currency          = session['currency'].upper(),
                             status            = 'confirmed',
-                            shipping_address_name = 'name',
+                            shipping_address_name = session['customer_details']['name'],
+                            shipping_address_city = session['customer_details']['address']['city'],
                         )
 
         return HttpResponse(status=200)
