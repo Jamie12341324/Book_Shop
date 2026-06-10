@@ -193,7 +193,7 @@ def stripe_webhook(request):
         if shipping_line2 == None:
             shipping_line2 = ""
 
-        billing_line2 = session['customer_details']['line2']
+        billing_line2 = session['customer_details']['address']['line2']
         if billing_line2 == None:
             billing_line2 = ""
 
@@ -204,18 +204,19 @@ def stripe_webhook(request):
                             amount_paid       = session['amount_total'],
                             currency          = session['currency'].upper(),
                             status            = 'confirmed',
-                            billing_address_name  = session['customer_details']['name'],
-                            billing_address_line1  = session['customer_details']['line1'],
-                            billing_address_line2 = billing_line2,
-                            billing_address_city  = session['customer_details']['address']['city'],
+                            billing_address_name      = session['customer_details']['name'],
+                            billing_address_line1     = session['customer_details']['address']['line1'],
+                            billing_address_line2     = billing_line2,
+                            billing_address_city      = session['customer_details']['address']['city'],
                             billing_address_postcode  = session['customer_details']['address']['postal_code'],
-                            billing_address_country  = session['customer_details']['country'],
-                            shipping_address_name = session['collected_information']['shipping_details']['name'],
-                            shipping_address_line1 = session['collected_information']['shipping_details']['address']['line1'],
-                            shipping_address_line2 = billing_line2,
-                            shipping_address_city = session['collected_information']['shipping_details']['address']['city'],
+                            billing_address_country   = session['customer_details']['address']['country'],
+
+                            shipping_address_name     = session['collected_information']['shipping_details']['name'],
+                            shipping_address_line1    = session['collected_information']['shipping_details']['address']['line1'],
+                            shipping_address_line2    = shipping_line2,
+                            shipping_address_city     = session['collected_information']['shipping_details']['address']['city'],
                             shipping_address_postcode = session['collected_information']['shipping_details']['address']['postal_code'],
-                            shipping_address_country = session['collected_information']['shipping_details']['address']['country'],
+                            shipping_address_country  = session['collected_information']['shipping_details']['address']['country'],
                         )
 
         return HttpResponse(status=200)
