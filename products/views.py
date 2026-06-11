@@ -129,6 +129,7 @@ def payment_success(request):
             billing_address = session.customer_details.address
             billing_name    = session.customer_details.name
             email           = session.customer_details.email
+            phone           = session.customer_details.phone
             # Deal with possible null line2 value
             billing_address_line2 = billing_address.line2
             #print(billing_address_line2)
@@ -140,6 +141,7 @@ def payment_success(request):
             #print("session2")
             if not Order.objects.filter(stripe_session_id=session_id).exists():
                 order = Order.objects.create(
+                    user = request.user,
                     product           = product,
                     stripe_session_id = session_id,
                     customer_email    = session.customer_details.email,
@@ -147,6 +149,7 @@ def payment_success(request):
                     currency          = session.currency.upper(),
                     status            = 'complete',
                     email = email,
+                    phone = phone,
                     shipping_address_name = shipping_name,
                     shipping_address_line1 = shipping_address.line1,
                     shipping_address_line2 = shipping_address_line2,
@@ -211,6 +214,7 @@ def stripe_webhook(request):
             billing_line2 = ""
 
         Order.objects.create(
+                            user = request.user,
                             product           = product,
                             stripe_session_id = session_id,
                             customer_email    = session['customer_details']['email'],
@@ -299,6 +303,7 @@ def stripe_webhook(request):
                         billing_line2 = ""
 
                     Order.objects.create(
+                            user = request.user,
                             product           = product,
                             stripe_session_id = session_id,
                             customer_email    = session['customer_details']['email'],

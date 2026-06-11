@@ -44,7 +44,7 @@ class Order(models.Model):
         ('cancelled', 'Cancelled'),
 
     ]
- 
+    user =models.ForeignKey(User, on_delete=models.PROTECT)
     product           = models.ForeignKey(Product, on_delete=models.PROTECT,
                             related_name='orders')
     stripe_session_id = models.CharField(max_length=200, unique=True)
