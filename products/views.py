@@ -66,7 +66,9 @@ def create_checkout_session(request, product_id):
             #customer = customer.id,
             billing_address_collection='required',
             shipping_address_collection={"allowed_countries": ["GB", "US"]},
-            
+            phone_number_collection={ 
+                'enabled': True,  
+            },
             line_items=[{
                 'price_data': {
                     'currency': 'gbp',
@@ -216,6 +218,7 @@ def stripe_webhook(request):
                             currency          = session['currency'].upper(),
                             status            = 'confirmed',
                             email                     = session['customer_details']['email'],
+                            phone                     = session['customer_details']['phone'],
                             billing_address_name      = session['customer_details']['name'],
                             billing_address_line1     = session['customer_details']['address']['line1'],
                             billing_address_line2     = billing_line2,
