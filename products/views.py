@@ -214,7 +214,7 @@ def stripe_webhook(request):
             billing_line2 = ""
 
         Order.objects.create(
-                            user = request.user,
+                            user = user_id,
                             product           = product,
                             stripe_session_id = session_id,
                             customer_email    = session['customer_details']['email'],
@@ -293,7 +293,6 @@ def stripe_webhook(request):
                     product_id = session['metadata']['product_id']
                     product = Product.objects.get(id=product_id)
                     user_id = session['metadata']['user_id']
-                    
 
                     # Deal with possible null line2 which is optional
         
@@ -306,7 +305,7 @@ def stripe_webhook(request):
                         billing_line2 = ""
 
                     Order.objects.create(
-                            user = user_id,
+                            user_id = user_id,
                             product           = product,
                             stripe_session_id = session_id,
                             customer_email    = session['customer_details']['email'],
