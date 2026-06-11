@@ -303,7 +303,7 @@ def stripe_webhook(request):
                         billing_line2 = ""
 
                     Order.objects.create(
-                            user = request.user,
+                            #user = request.user,
                             product           = product,
                             stripe_session_id = session_id,
                             customer_email    = session['customer_details']['email'],
