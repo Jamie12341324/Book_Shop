@@ -44,12 +44,29 @@ def create_checkout_session(request, product_id):
     product = get_object_or_404(Product, id=product_id)
 
     try:
+        if False:
+            customer = stripe.Customer.create(
+                email="alice@example.com",
+                shipping={
+                    "name": "Colin Smith",
+                    "address": {
+                    "line1": "1 High Street",
+                    "line2": "Cheapside",
+                    "city": "Bath",
+                    "postal_code": "BA1 1AA",
+                    "country": "GB",
+                    },
+                },
+            )
+        
 
         session = stripe.checkout.Session.create(    
             payment_method_types=['card'],
             customer_creation='always',
+            #customer = customer.id,
             billing_address_collection='required',
             shipping_address_collection={"allowed_countries": ["GB", "US"]},
+            
             line_items=[{
                 'price_data': {
                     'currency': 'gbp',
@@ -87,13 +104,11 @@ def payment_success(request):
     session_id = request.GET.get('session_id')
 
     order = None
-    print('session1')
+    #print('session1')
     session = stripe.checkout.Session.retrieve(session_id)
     #print(session)
     if session_id:
-        #session = stripe.checkout.Session.retrieve(session_id)
-        #shipping_address = shipping.address
-        #print('shipping code' + shipping["postal_code"])
+        
         try:
 
             session = stripe.checkout.Session.retrieve(session_id)
@@ -102,6 +117,7 @@ def payment_success(request):
 
             shipping_address = session.collected_information.shipping_details.address
             shipping_name    = session.collected_information.shipping_details.name
+            
             # Deal with possible null line2 value
             shipping_address_line2 = shipping_address.line2
             #print(shipping_address_line2)
@@ -110,6 +126,7 @@ def payment_success(request):
 
             billing_address = session.customer_details.address
             billing_name    = session.customer_details.name
+            email           = session.customer_details.email
             # Deal with possible null line2 value
             billing_address_line2 = billing_address.line2
             #print(billing_address_line2)
@@ -118,7 +135,7 @@ def payment_success(request):
 
             # Guard: avoid duplicate rows if user refreshes the success page
             # print('address' + session.shipping_details.address)
-            
+            #print("session2")
             if not Order.objects.filter(stripe_session_id=session_id).exists():
                 order = Order.objects.create(
                     product           = product,
@@ -127,6 +144,7 @@ def payment_success(request):
                     amount_paid       = session.amount_total,
                     currency          = session.currency.upper(),
                     status            = 'complete',
+                    email = email,
                     shipping_address_name = shipping_name,
                     shipping_address_line1 = shipping_address.line1,
                     shipping_address_line2 = shipping_address_line2,
@@ -140,20 +158,20 @@ def payment_success(request):
                     billing_address_country = billing_address.country,
                     billing_address_postcode = billing_address.postal_code,
                 )
-                print('session2')
-            #else:
-            #    print(session.amount_total)
-            #    product_to_change=Product.objects.get(Q(id=product_id))
-            #    order = Order.objects.get(Q(stripe_session_id=session_id))
-            #    order.product = product
-            #    order.stripe_session_id = session_id,
-            #    order.customer_email    = session.customer_details.email,
-            #    #order.amount_paid       = session.amount_total,
-            #    order.currency          = session.currency.upper(),
-            #    order.status            = 'complete2',
-            #    order.shipping_address_name = 'name',               
-            #    order.save()
-            #    print("print session3")
+                print('success complete')
+            else:
+                #print(session.amount_total)
+                #product_to_change=Product.objects.get(Q(id=product_id))
+                order = Order.objects.get(Q(stripe_session_id=session_id))
+                #order.product = product
+                #order.stripe_session_id = session_id,
+                #order.customer_email    = session.customer_details.email,
+                #order.amount_paid       = session.amount_total,
+                #order.currency          = session.currency.upper(),
+                #order.status            = 'complete2',
+                #order.shipping_address_name = 'name',               
+                #order.save()
+                #print("print session3")
  
         except (stripe.error.StripeError, Exception):
             pass
@@ -197,6 +215,7 @@ def stripe_webhook(request):
                             amount_paid       = session['amount_total'],
                             currency          = session['currency'].upper(),
                             status            = 'confirmed',
+                            email                     = session['customer_details']['email'],
                             billing_address_name      = session['customer_details']['name'],
                             billing_address_line1     = session['customer_details']['address']['line1'],
                             billing_address_line2     = billing_line2,
@@ -209,7 +228,7 @@ def stripe_webhook(request):
                             shipping_address_line2    = shipping_line2,
                             shipping_address_city     = session['collected_information']['shipping_details']['address']['city'],
                             shipping_address_postcode = session['collected_information']['shipping_details']['address']['postal_code'],
-                            shipping_address_country  = session['collected_information']['shipping_details']['address']['country'],
+                            shipping_address_country  = session['collected_information']['shipping_details']['address']['country'], 
                         )
 
         return HttpResponse(status=200)

@@ -53,6 +53,8 @@ class Order(models.Model):
     currency          = models.CharField(max_length=3, default='GBP')
     status            = models.CharField(max_length=10, choices=STATUS_CHOICES,
                             default='pending')
+    email                      = models.CharField(max_length=100, default='')
+    phone                      = models.CharField(max_length=100, default='')
     shipping_address_name      = models.CharField(max_length=100, default='')
     shipping_address_line1     = models.CharField(max_length=200, default='')
     shipping_address_line2      = models.CharField(max_length=200, default='')
@@ -65,7 +67,7 @@ class Order(models.Model):
     billing_address_line2      = models.CharField(max_length=200, default='')
     billing_address_city     = models.CharField(max_length=200, default='')
     billing_address_postcode  = models.CharField(max_length=20, default='')
-    billing_address_country   = models.CharField(max_length=100, default='')
+    billing_address_country   = models.CharField(max_length=100, default='') 
     created_at        = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
