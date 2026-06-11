@@ -85,7 +85,7 @@ def create_checkout_session(request, product_id):
 
             # Store product_id in metadata so success view can look it up
 
-            metadata={'product_id': product.id},
+            metadata={'product_id': product.id,'user_id':request.user.id},
 
             success_url=(
                 request.build_absolute_uri('/products/success/')
@@ -287,10 +287,13 @@ def stripe_webhook(request):
 
                 try:
 
-                    product = Product.objects.get(id=product_id)
+                    
                     session    = event['data']['object']
                     session_id = session['id']
                     product_id = session['metadata']['product_id']
+                    product = Product.objects.get(id=product_id)
+                    user_id = session['metadata']['user_id']
+                    
 
                     # Deal with possible null line2 which is optional
         
@@ -303,7 +306,7 @@ def stripe_webhook(request):
                         billing_line2 = ""
 
                     Order.objects.create(
-                            #user = request.user,
+                            user = user_id,
                             product           = product,
                             stripe_session_id = session_id,
                             customer_email    = session['customer_details']['email'],
