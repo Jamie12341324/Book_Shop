@@ -305,6 +305,8 @@ def stripe_webhook(request):
                             amount_paid       = session['amount_total'],
                             currency          = session['currency'].upper(),
                             status            = 'confirmed',
+                            email                     = session['customer_details']['email'],
+                            phone                     = session['customer_details']['phone'],
                             billing_address_name      = session['customer_details']['name'],
                             billing_address_line1     = session['customer_details']['address']['line1'],
                             billing_address_line2     = billing_line2,
