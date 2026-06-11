@@ -338,7 +338,7 @@ def stripe_webhook(request):
                     #    status            = 'confirmed',   
                     #)
 
-                    print_msg = (f"✅ Webhook: Order created for {product.name}")
+                    print_msg = (f"✅ Webhook: Order created for {product.title}")
 
                 except Product.DoesNotExist:
 
