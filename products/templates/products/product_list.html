@@ -4,6 +4,15 @@
 {% block content %}
 <div class="container">
     <div class="row">
+        <div class="col-12 home_text">
+            <form method="POST" name="submit_form" id="submit_form" action="{% url 'product_list_search' %}">
+                {% csrf_token %}
+                <label for="keyword" class="pad_1">Search</label><br>
+                <input id="keyword" name="keyword" type="text" class="pad_1"><br>
+                <!-- <button href="{% url 'product_list_search' %}" type="submit" class="btn btn-primary pad_1">Search Button</a> -->
+                <input type="submit" value="Search Button" class="btn btn-primary pad_1">
+            </form>
+        </div>
         {% for product in products %}
         <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
             <a href="{% url 'product_detail' product.id %}">

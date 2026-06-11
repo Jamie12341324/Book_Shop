@@ -12,11 +12,22 @@
 /* Translucent green overlay and white text to help text stand out */
 .container_margin{
     margin-top:10px;
-    background-color: rgba(0, 255, 42, 0.5);
+    background-color: rgba(0, 255, 42, 0.7);
     color:white;
+    font-size: 120%;
     
 }
 .detail_box{
-    background-color: rgba(0, 0, 0, 0.5);
+    margin-top:10px;
+    background-color: rgba(0, 0, 0, 0.8);
     color:white;
+}
+.margin_extra{
+    padding-top:25px;
+    padding-bottom:25px;
+    margin-top:100px;
+}
+.pad_1{
+    margin-top:10px;
+    margin-bottom:10px;
 }

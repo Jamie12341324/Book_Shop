@@ -25,6 +25,16 @@ def product_list(request):
     }
     return render(request,template,context)
 
+def product_list_search(request):
+    if request.method=="POST":
+        template='products/product_list.html'
+        search_word=request.POST.get("keyword")
+        products=Product.objects.filter(Q(title__icontains=search_word)).values()
+        context = {
+            'products':products,
+        }
+        return render(request,template,context)
+
 @login_required(login_url="/accounts/login/")
 def product_details(request,product_id):
     if request.method=="GET":

@@ -5,6 +5,7 @@ from . import views
 urlpatterns = [
     # path('', views.all_products, name='products'),
     path('product_list/', views.product_list, name='product_list'),
+    path('product_list_search/', views.product_list_search, name='product_list_search'),
     path('product_detail/<int:product_id>/', views.product_details, name='product_detail'),
     path('checkout/<int:product_id>/', views.create_checkout_session, name='create_checkout_session'),
     path('success/', views.payment_success, name='payment_success'),
