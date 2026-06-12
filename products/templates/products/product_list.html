@@ -8,9 +8,8 @@
             <form method="POST" name="submit_form" id="submit_form" action="{% url 'product_list_search' %}">
                 {% csrf_token %}
                 <label for="keyword" class="pad_1">Search</label><br>
-                <input id="keyword" name="keyword" type="text" class="pad_1"><br>
-                <!-- <button href="{% url 'product_list_search' %}" type="submit" class="btn btn-primary pad_1">Search Button</a> -->
-                <input type="submit" value="Search Button" class="btn btn-primary pad_1">
+                <input id="keyword" name="keyword" type="text" class="pad_1" aria-label="Search box for searching for specific books"><br>
+                <input type="submit" value="Search Button" class="btn btn-primary pad_1" aria-label="activate search with what is in the search box">
             </form>
         </div>
         {% for product in products %}
@@ -21,8 +20,8 @@
             </a>
             {% if request.user.is_staff %}
             <!-- btn-primary and btn-danger classes from bootstrap -->
-            <a href="{% url 'product_edit' product.id %}" class="btn btn-primary">Edit</a>
-            <a href="{% url 'product_delete' product.id %}" class="btn btn-danger">Delete</a>
+            <a href="{% url 'product_edit' product.id %}" class="btn btn-primary" aria-label="Link that only shows up for staff users that sends you to a edit book page for the book that is above this link">Edit</a>
+            <a href="{% url 'product_delete' product.id %}" class="btn btn-danger" aria-label="Link that deletes the book above from the database">Delete</a>
             {% endif %}
             <h2>Title: {{product.title}}</h2>
             <h3>Author: {{product.author}}</h3>

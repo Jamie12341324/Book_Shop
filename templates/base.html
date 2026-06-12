@@ -52,29 +52,29 @@
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
                         <a class="nav-link {% if request.path == home_url %}active{% endif %}" aria-current="page"
-                            href="{% url 'home' %}">Home</a>
+                            href="{% url 'home' %}" aria-label="Link  that sends you to the home page">Home</a>
                     </li>
                     {% if user.is_authenticated %}
                     <li class="nav-item">
-	                    <a class="nav-link {% if request.path == logout_url %}active{% endif %}" aria-current="page" href="{% url 'account_logout' %}">Logout</a>
+	                    <a class="nav-link {% if request.path == logout_url %}active{% endif %}" aria-current="page" href="{% url 'account_logout' %}" aria-label="Link  that takes you to the logout page">Logout</a>
                     </li>
                     {% else %}
                     <li class="nav-item">
 	                    <a class="nav-link {% if request.path == signup_url %}active{% endif %}" aria-current="page"
-		                href="{% url 'account_signup' %}">Register</a>
+		                href="{% url 'account_signup' %}" aria-label="Link that takes you to the register page">Register</a>
                     </li>
                     <li class="nav-item">
-	                <a class="nav-link {% if request.path == login_url %}active{% endif %}" aria-current="page" href="{% url 'account_login' %}">Login</a>
+	                <a class="nav-link {% if request.path == login_url %}active{% endif %}" aria-current="page" href="{% url 'account_login' %}" aria-label="Link that takes you to the login page">Login</a>
                     </li>
                     {% endif %}
                     <li class="nav-item">
                         <a class="nav-link {% if request.path == product_list_url %}active{% endif %}" aria-current="page"
-                            href="{% url 'product_list' %}">Product List</a>
+                            href="{% url 'product_list' %}" aria-label="Link that takes you to the product list page">Product List</a>
                     </li>
                     {% if request.user.is_staff %}
                     <li class="nav-item">
                         <a class="nav-link {% if request.path == product_add_url %}active{% endif %}" aria-current="page"
-                            href="{% url 'product_add' %}">Add product</a>
+                            href="{% url 'product_add' %}" aria-label="Link that takes you to the add product page">Add product</a>
                     </li>
                     {% endif %}
                 </ul>
