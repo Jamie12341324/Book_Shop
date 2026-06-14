@@ -126,6 +126,8 @@ def payment_success(request):
             session = stripe.checkout.Session.retrieve(session_id)
             product_id = session['metadata']['product_id']
             product = Product.objects.get(id=product_id)
+            title = product.title
+            price = product.price
 
             shipping_address = session.collected_information.shipping_details.address
             shipping_name    = session.collected_information.shipping_details.name
@@ -172,6 +174,8 @@ def payment_success(request):
                     billing_address_city = billing_address.city,
                     billing_address_country = billing_address.country,
                     billing_address_postcode = billing_address.postal_code,
+                    title = title,
+                    price = price
                 )
                 print('success complete')
             else:
@@ -303,6 +307,8 @@ def stripe_webhook(request):
                     product_id = session['metadata']['product_id']
                     product = Product.objects.get(id=product_id)
                     user_id = session['metadata']['user_id']
+                    title = product.title
+                    price = product.price
 
                     # Deal with possible null line2 which is optional
         
@@ -337,6 +343,8 @@ def stripe_webhook(request):
                             shipping_address_city     = session['collected_information']['shipping_details']['address']['city'],
                             shipping_address_postcode = session['collected_information']['shipping_details']['address']['postal_code'],
                             shipping_address_country  = session['collected_information']['shipping_details']['address']['country'],
+                            title = title,
+                            price = price,
                         )
 
                     #Order.objects.create(

@@ -79,7 +79,7 @@ function is_isbnNum(p){
 
 }
 document.addEventListener("DOMContentLoaded", function(){
-    alert("hi");
+    
     let button1=document.getElementById("create");
     if (button1){
         button1.addEventListener("click", function(event){

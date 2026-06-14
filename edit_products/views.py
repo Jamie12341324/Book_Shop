@@ -2,9 +2,20 @@ from django.shortcuts import render,redirect
 from django.urls import reverse
 # method of importing a model from another app from chatgpt
 from products.models import Product
+from products.models import Order
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 # Create your views here.
+
+
+@login_required(login_url="/accounts/login/")
+def order_list(request):
+    orders=Order.objects.filter(Q(user_id=request.user.id)).values().order_by("created_at")
+    template='order_list.html'
+    context={
+        "orders":orders
+    }
+    return render(request,template,context)
 
 @login_required(login_url="/accounts/login/")
 def product_add(request):

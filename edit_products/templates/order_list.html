@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        {% for order in orders %}
+        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 detail_box margin_extra order_list_text">
+            <p>product: {{ order.product__title }} </p> <br>
+            <p>email: {{ order.email }} </p> <br>
+            <p>phone: {{ order.phone }} </p> <br>
+            <p>shipping_address_name: {{ order.shipping_address_name }} </p> <br>
+            <p>shipping_address_line1: {{ order.shipping_address_line1 }} </p> <br>
+            <p>shipping_address_line2: {{ order.shipping_address_line2 }} </p> <br>
+            <p>shipping_address_city: {{ order.shipping_address_city }} </p> <br>
+            <p>shipping_address_postcode: {{ order.shipping_address_postcode }} </p> <br>
+            <p>shipping_address_country: {{ order.shipping_address_country }} </p> <br>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

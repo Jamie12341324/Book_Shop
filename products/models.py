@@ -67,7 +67,11 @@ class Order(models.Model):
     billing_address_line2      = models.CharField(max_length=200, default='')
     billing_address_city     = models.CharField(max_length=200, default='')
     billing_address_postcode  = models.CharField(max_length=20, default='')
-    billing_address_country   = models.CharField(max_length=100, default='') 
+    billing_address_country   = models.CharField(max_length=100, default='')
+    # Add when order happens in case they change in future
+    title = models.CharField(max_length=254, default='')
+    price = models.DecimalField(max_digits=6, decimal_places=2, default=0.0)
+
     created_at        = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
