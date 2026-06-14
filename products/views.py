@@ -53,27 +53,16 @@ def create_checkout_session(request, product_id):
  
     product = get_object_or_404(Product, id=product_id)
 
+    # If profile featire available
+    ProfileAvailable = False
+    # Add to session = customer.id,
     try:
-        if False:
-            customer = stripe.Customer.create(
-                email="alice@example.com",
-                shipping={
-                    "name": "Colin Smith",
-                    "address": {
-                    "line1": "1 High Street",
-                    "line2": "Cheapside",
-                    "city": "Bath",
-                    "postal_code": "BA1 1AA",
-                    "country": "GB",
-                    },
-                },
-            )
+  
         
 
         session = stripe.checkout.Session.create(    
             payment_method_types=['card'],
             customer_creation='always',
-            #customer = customer.id,
             billing_address_collection='required',
             shipping_address_collection={"allowed_countries": ["GB", "US"]},
             phone_number_collection={ 
@@ -208,52 +197,6 @@ def stripe_webhook(request):
     sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
     secret     = settings.STRIPE_WEBHOOK_SECRET
                 
-    if False:
-        event = stripe.Webhook.construct_event(
-            payload, sig_header, secret
-        )
-        session    = event['data']['object']
-        session_id = session['id']
-        product_id = session['metadata']['product_id']
-        product = Product.objects.get(id=product_id)
-
-        # Deal with possible null line2 which is optional
-        
-        shipping_line2 = session['collected_information']['shipping_details']['address']['line2']
-        if shipping_line2 == None:
-            shipping_line2 = ""
-
-        billing_line2 = session['customer_details']['address']['line2']
-        if billing_line2 == None:
-            billing_line2 = ""
-
-        Order.objects.create(
-                            user = user_id,
-                            product           = product,
-                            stripe_session_id = session_id,
-                            customer_email    = session['customer_details']['email'],
-                            amount_paid       = session['amount_total'],
-                            currency          = session['currency'].upper(),
-                            status            = 'confirmed',
-                            email                     = session['customer_details']['email'],
-                            phone                     = session['customer_details']['phone'],
-                            billing_address_name      = session['customer_details']['name'],
-                            billing_address_line1     = session['customer_details']['address']['line1'],
-                            billing_address_line2     = billing_line2,
-                            billing_address_city      = session['customer_details']['address']['city'],
-                            billing_address_postcode  = session['customer_details']['address']['postal_code'],
-                            billing_address_country   = session['customer_details']['address']['country'],
-
-                            shipping_address_name     = session['collected_information']['shipping_details']['name'],
-                            shipping_address_line1    = session['collected_information']['shipping_details']['address']['line1'],
-                            shipping_address_line2    = shipping_line2,
-                            shipping_address_city     = session['collected_information']['shipping_details']['address']['city'],
-                            shipping_address_postcode = session['collected_information']['shipping_details']['address']['postal_code'],
-                            shipping_address_country  = session['collected_information']['shipping_details']['address']['country'], 
-                        )
-
-        return HttpResponse(status=200)
-
 
     # ── Step 1: Verify the event came from Stripe ──────────────────
 

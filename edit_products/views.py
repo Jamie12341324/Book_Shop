@@ -10,7 +10,10 @@ from django.contrib.auth.decorators import login_required
 
 @login_required(login_url="/accounts/login/")
 def order_list(request):
-    orders=Order.objects.filter(Q(user_id=request.user.id)).values().order_by("created_at")
+    if not request.user.is_staff:
+        return redirect("/accounts/login/") 
+    #orders=Order.objects.filter(Q(user_id=request.user.id)).values().order_by("created_at")
+    orders=Order.objects.values().order_by("-created_at")
     template='order_list.html'
     context={
         "orders":orders
