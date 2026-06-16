@@ -1,6 +1,8 @@
+
+
 function isNum(p){
     if (p.value=="0"){
-        return false;
+        return true;
     }
     if(p.value.trim() == "" ){
         alert("You cannot enter blank - the field has been reset to zero");
@@ -34,8 +36,7 @@ function isNum(p){
         p.value="0";
         p.focus();
         return false;
-    }
-    return true;
+    }   
 }
 function is_isbnNum(p){
 
@@ -43,46 +44,56 @@ function is_isbnNum(p){
         return false;
     }
     if(p.value.trim() == "" ){
-        alert("You cannot enter blank - the field has been reset to zero");
+        alert("You cannot enter blank  isbn - the field has been reset to zero");
         p.value="0";
         p.focus();
-        return false;
+        return true;
     }
     if(p.value.trim().includes("-") ){
-        alert("Numbers cannot be negative or contain dashes");
+        alert("isbn Numbers cannot be negative or contain dashes");
         p.value="0";
         p.focus();
         return false;
     }
     if(String(p.value).includes(".")){
-        alert("The number cannot contain decimals");
+        alert("isbn number cannot contain decimals");
         p.value="0";
         p.focus();
-        return;
+        return false;
     }
     if(String(p.value).length>13){
-        alert("The number is far too big - it should be a thousand or less");
+        alert("isbn number is too big - it should be a thousand or less");
         p.value="0";
         p.focus();
         return false;
     }
     if (isNaN(p.value)){
-        alert("The number is invalid");
-        p.value="0";
+        alert("isbn number is invalid");
+        
         p.focus();
         return false;
     }
     return true;
 }
+
+function isDecimal(input) {
+    // Use the match() method with a regular expression
+    // https://www.geeksforgeeks.org/javascript/how-to-validate-decimal-numbers-in-javascript/
+    const isDecimal = input.match(/^-?\d*\.?\d+$/);
+    // Return true if it's a valid decimal number, otherwise return false
+    return isDecimal !== null;
+}
+
 document.addEventListener("DOMContentLoaded", function(){
-    
-    let button1=document.getElementById("create");
+    // alert("add listener");
+    let button1=document.getElementById("save");
     if (button1){
         button1.addEventListener("click", function(event){
-           
+            //alert("validate form");
             let p=document.getElementById("price");
-            if ( !isNum(p) ) {
-                p.focus();
+            
+            if ( !isDecimal(p.value) ) {
+                alert("Invalid decimal number for price");
                 event.preventDefault();
                 return false;
             }
@@ -91,7 +102,15 @@ document.addEventListener("DOMContentLoaded", function(){
                 event.preventDefault();
                 return false;
             } 
+           
+            let p3=document.getElementById("rating");
+            if ( !isDecimal(p3.value) ){
+                alert("invalid rating");
+                event.preventDefault();
+                return false;
+            } 
+            
         });
     }
-    return false;
+    //return false;
 });
