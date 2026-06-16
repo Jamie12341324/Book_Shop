@@ -45,7 +45,7 @@ class Order(models.Model):
 
     ]
     user =models.ForeignKey(User, on_delete=models.PROTECT)
-    product           = models.ForeignKey(Product, on_delete=models.PROTECT,
+    product           = models.ForeignKey(Product, on_delete=models.CASCADE,
                             related_name='orders')
     stripe_session_id = models.CharField(max_length=200, unique=True)
     customer_email    = models.EmailField()
