@@ -4,6 +4,7 @@
 {% url 'product_list_search' as product_list_search_url %}
 {% url 'product_add' as product_add_url %}
 {% url 'order_list' as order_list_url %}
+{% url 'my_orders' as my_orders_url %}
 {% url 'product_edit' as product_edit_url %}
 
 {% url 'home' as home_url %}
@@ -81,7 +82,13 @@
                         <a class="nav-link {% if request.path == order_list_url %}active{% endif %} link" aria-current="page"
                             href="{% url 'order_list' %}" aria-label="Link that takes you to the order list page">Order list</a>
                     </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == my_orders_url %}active{% endif %} link" aria-current="page"
+                            href="{% url 'my_orders' %}" aria-label="Link that takes you to the my orders page">My orders</a>
+                    </li>
                     {% endif %}
+                    
                 </ul>
                 <span class="navbar-text text-muted">
                 </span>

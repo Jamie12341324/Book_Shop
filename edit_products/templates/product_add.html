@@ -26,6 +26,13 @@
                     <label for="price">Price:</label>
                     <input name="price" type="text" id="price" class="pad_1" aria-label="The price of the book to be added as a new book to the product list">
                     <br>
+                    <label for="category">Book category</label>
+                    <select id="category" name="category">
+                    {% for category in categories %}
+                        <option value="{{category.id}}">{{category.name}}</option>
+                    {% endfor %}
+                    </select>
+                    <br>
                     <!-- bootstrap button class (btn-success) used to style a buy now button -->
                     <button type="submit" class="btn btn-success pad_1" id="create" aria-label="Button that creates a new book/product in the database">Save</button>
                     </div>

@@ -5,6 +5,7 @@ from django.shortcuts import render
 from django.contrib import messages
 from .forms import ProductForm
 from .models import Product
+from .models import Category
 from .models import Order
 from django.db.models import Q
 from django.conf import settings
@@ -20,8 +21,10 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 def product_list(request):
     template='products/product_list.html'
     products=Product.objects.values()
+    categories=Category.objects.values()
     context = {
         'products':products,
+        'categories':categories,
     }
     return render(request,template,context)
 
@@ -29,9 +32,12 @@ def product_list_search(request):
     if request.method=="POST":
         template='products/product_list.html'
         search_word=request.POST.get("keyword")
-        products=Product.objects.filter(Q(title__icontains=search_word)).values()
+        category=request.POST.get("category")
+        products=Product.objects.filter(Q(title__icontains=search_word) and Q(category__name__icontains=category)).values('category__name','id','rating','price','description','author','title','isbn','creator')
+        categories=Category.objects.values()
         context = {
             'products':products,
+            'categories':categories,
         }
         return render(request,template,context)
 

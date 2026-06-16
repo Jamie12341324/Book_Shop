@@ -9,22 +9,29 @@
                     <div class="col-lg-6 col-md-8 col-sm-12 detail_box margin_extra">
                     <h1>Book to Edit</h1>
                     <label for="isbn">isbn</label>
-                    <input name="isbn" type="text" id="isbn" class="pad_1" value="{{product.isbn}}" aria-label="isbn is a number used to get a image of a book">
+                    <input name="isbn" type="text" id="isbn" class="pad_1" value="{{product.isbn}}" aria-label="isbn is a number used to get a image of a book to be saved to a already existing book on the product list">
                     <br>
                     <label for="title">Title:</label>
-                    <input name="title" type="text" id="title" class="pad_1" value="{{product.title}}" aria-label="The title of the book to be added as a new book to the product list">
+                    <input name="title" type="text" id="title" class="pad_1" value="{{product.title}}" aria-label="The title of the book to be saved to a already existing book on the product list">
                     <br>
                     <label for="author">Author:</label>
-                    <input name="author" type="text" id="author" class="pad_1" value="{{product.author}}" aria-label="The author of the book to be added as a new book to the product list">
+                    <input name="author" type="text" id="author" class="pad_1" value="{{product.author}}" aria-label="The author of the book to be saved to a already existing book on the product list">
                     <br>
                     <label for="rating">Rating:</label>
-                    <input name="rating" type="text" id="rating" class="pad_1" value="{{product.rating}}" aria-label="The rating of the book to be added as a new book to the product list">
+                    <input name="rating" type="text" id="rating" class="pad_1" value="{{product.rating}}" aria-label="The rating of the book to be saved to a already existing book on the product list">
                     <br>
                     <label for="description">Description:</label>
-                    <input name="description" type="text" id="description" class="pad_1" value="{{product.description}}" aria-label="The description of the book to be added as a new book to the product list">
+                    <input name="description" type="text" id="description" class="pad_1" value="{{product.description}}" aria-label="The description of the book to be saved to a already existing book on the product list">
                     <br>
                     <label for="price">Price:</label>
-                    <input name="price" type="text" id="price" class="pad_1" value="{{product.price}}" aria-label="The price of the book to be added as a new book to the product list">
+                    <input name="price" type="text" id="price" class="pad_1" value="{{product.price}}" aria-label="The price of the book to be saved to a already existing book on the product list">
+                    <br>
+                    <label for="category">Book category</label>
+                    <select id="category" name="category">
+                    {% for category in categories %}
+                        <option value="{{category.id}}">{{category.name}}</option>
+                    {% endfor %}
+                    </select>
                     <br>
                     <!-- bootstrap button class (btn-success) used to style a buy now button -->
                     <button type="submit" class="btn btn-success pad_1" aria-label="button that overwrites the old product information wih the new product information">Save</button>

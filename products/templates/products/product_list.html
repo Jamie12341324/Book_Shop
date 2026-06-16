@@ -9,6 +9,12 @@
                 {% csrf_token %}
                 <label for="keyword" class="pad_1">Search</label><br>
                 <input id="keyword" name="keyword" type="text" class="pad_1" aria-label="Search box for searching for specific books"><br>
+                <label for="category">Book category</label>
+                <select id="category" name="category">
+                    {% for category in categories %}
+                        <option value="{{category.name}}">{{category.name}}</option>
+                    {% endfor %}
+                </select><br>
                 <input type="submit" value="Search Button" class="btn btn-primary pad_1" aria-label="activate search with what is in the search box">
             </form>
         </div>
@@ -24,6 +30,7 @@
             <a href="{% url 'product_delete' product.id %}" class="btn btn-danger" aria-label="Link that deletes the book above from the database">Delete</a>
             {% endif %}
             <h2>Title: {{product.title}}</h2>
+            <h3>Category: {{product.category__name}}</h3>
             <h3>Author: {{product.author}}</h3>
             <h3>Rating: {{product.rating}}</h3>
             <p>Description: {{product.description}}</p>
