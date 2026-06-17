@@ -20,7 +20,7 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 
 def product_list(request):
     template='products/product_list.html'
-    products=Product.objects.values()
+    products=Product.objects.values('category__name','id','rating','price','description','author','title','isbn','creator').order_by('title')
     categories=Category.objects.values()
     context = {
         'products':products,

@@ -1,5 +1,3 @@
-
-
 function isNum(p){
     if (p.value=="0"){
         return true;
@@ -93,7 +91,7 @@ document.addEventListener("DOMContentLoaded", function(){
             let p=document.getElementById("price");
             
             if ( !isDecimal(p.value) ) {
-                alert("Invalid decimal number for price");
+                alert("Invalid decimal number for price!");
                 event.preventDefault();
                 return false;
             }
@@ -112,5 +110,18 @@ document.addEventListener("DOMContentLoaded", function(){
             
         });
     }
+
+    let isbn1=document.getElementById("isbn");
+    if (isbn1){
+        isbn1.addEventListener("change", function(event){
+            
+            document.getElementById('book_image').src='https://covers.openlibrary.org/b/isbn/'+document.getElementById('isbn').value+'-M.jpg';
+            }
+        )
+    };
+
     //return false;
-});
+}
+
+);
+

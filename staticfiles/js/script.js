@@ -109,6 +109,9 @@ document.addEventListener("DOMContentLoaded", function(){
                 event.preventDefault();
                 return false;
             } 
+            button1.addEventListener("click", function(event){
+                document.getElementById('book_image').src='https://covers.openlibrary.org/b/isbn/'+document.getElementById('isbn').value+'-M.jpg';
+            }
             
         });
     }
