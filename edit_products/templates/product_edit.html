@@ -11,7 +11,7 @@
                     <p class="pad-1"> The isbn number is used to get an image for the book your are adding if the isbn is wrong then no image will appear on the product list page</p><br>
                     <label for="isbn">isbn</label>
                     <input name="isbn" type="text" id="isbn" class="pad_1" value="{{product.isbn}}" aria-label="isbn is a number used to get a image of a book to be saved to a already existing book on the product list">
-                    <img id="book_image" alt="?" style="width:50px" >
+                    <img id="book_image" alt="?" style="width:50px" src='https://covers.openlibrary.org/b/isbn/{{product.isbn}}-M.jpg'>
                     <br>
                     <label for="title">Title:</label>
                     <input name="title" type="text" id="title" class="pad_1" value="{{product.title}}" aria-label="The title of the book to be saved to a already existing book on the product list">
@@ -31,7 +31,7 @@
                     <label for="category">Book category</label>
                     <select id="category" name="category">
                     {% for category in categories %}
-                        <option value="{{category.id}}">{{category.name}}</option>
+                        <option value="{{category.id}}" {% if category.id == product.category_id %}selected{% endif %} >{{category.name}}</option>
                     {% endfor %}
                     </select>
                     <br>
