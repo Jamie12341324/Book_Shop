@@ -1,41 +1,4 @@
-function isNum(p){
-    if (p.value=="0"){
-        return true;
-    }
-    if(p.value.trim() == "" ){
-        alert("You cannot enter blank - the field has been reset to zero");
-        p.value="0";
-        p.focus();
-        return false;
-    }
-    if(p.value.trim().includes("-") ){
-        alert("Numbers cannot be negative or contain dashes");
-        p.value="0";
-        p.focus();
-        return false;
-    }
-    if(String(p.value).length>9){
-        alert("The number is far too big - it should be a thousand or less");
-        p.value="0";
-        p.focus();
-        return false;
-    }
-    if (isNaN(p.value)){
-        alert("The number is invalid");
-        p.value="0";
-        p.focus();
-        return false;
-    }
-
-    num = parseInt(p.value);
-    
-    if(num > 1000 || num < 0 ){
-        alert("The number cannot be greater than 1000 or negative");
-        p.value="0";
-        p.focus();
-        return false;
-    }   
-}
+// checks if a isbn number is valid
 function is_isbnNum(p){
 
     if (p.value=="0"){
@@ -73,23 +36,18 @@ function is_isbnNum(p){
     }
     return true;
 }
-
+// checks if a number is a decimal
 function isDecimal(input) {
-    // Use the match() method with a regular expression
-    // https://www.geeksforgeeks.org/javascript/how-to-validate-decimal-numbers-in-javascript/
     const isDecimal = input.match(/^-?\d*\.?\d+$/);
     // Return true if it's a valid decimal number, otherwise return false
     return isDecimal !== null;
 }
-
+// adds an event listner which calls the isbn, price and rating valid checkers
 document.addEventListener("DOMContentLoaded", function(){
-    // alert("add listener");
     let button1=document.getElementById("save");
     if (button1){
         button1.addEventListener("click", function(event){
-            //alert("validate form");
             let p=document.getElementById("price");
-            
             if ( !isDecimal(p.value) ) {
                 alert("Invalid decimal number for price!");
                 event.preventDefault();
@@ -110,9 +68,10 @@ document.addEventListener("DOMContentLoaded", function(){
             
         });
     }
-
+    // puts a image of a book with the isbn number on the add book form so you know if you got the number right 
     let isbn1=document.getElementById("isbn");
     if (isbn1){
+        // event listener with change from stack overflow
         isbn1.addEventListener("change", function(event){
             
             document.getElementById('book_image').src='https://covers.openlibrary.org/b/isbn/'+document.getElementById('isbn').value+'-M.jpg';

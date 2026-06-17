@@ -107,6 +107,13 @@ document.addEventListener("DOMContentLoaded", function(){
                 event.preventDefault();
                 return false;
             } 
+            let p4=document.getElementById("category");
+            if (p4.value == "0"){
+                alert("Please select a category");
+                event.preventDefault();
+                return false;
+            }
+            
             
         });
     }

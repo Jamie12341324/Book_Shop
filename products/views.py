@@ -17,7 +17,7 @@ stripe_public_key = settings.STRIPE_PUBLIC_KEY
 stripe_secret_key = settings.STRIPE_SECRET_KEY
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
-
+# gives a list of products
 def product_list(request):
     template='products/product_list.html'
     products=Product.objects.values('category__name','id','rating','price','description','author','title','isbn','creator').order_by('title')
@@ -27,7 +27,7 @@ def product_list(request):
         'categories':categories,
     }
     return render(request,template,context)
-
+# gives a list of products that match the search keywords and or categories
 def product_list_search(request):
     if request.method=="POST":
         template='products/product_list.html'
@@ -40,7 +40,7 @@ def product_list_search(request):
             'categories':categories,
         }
         return render(request,template,context)
-
+# gives a single product that has been clicked on in the product list page with a buy now button
 @login_required(login_url="/accounts/login/")
 def product_details(request,product_id):
     if request.method=="GET":

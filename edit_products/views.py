@@ -8,7 +8,7 @@ from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 # Create your views here.
 
-
+# gives the staff a list of products that have been ordered so that thye can send out the books they have sold
 @login_required(login_url="/accounts/login/")
 def order_list(request):
     if not request.user.is_staff:
@@ -19,6 +19,7 @@ def order_list(request):
         "orders":orders
     }
     return render(request,template,context)
+# gives the user a list of products that they have ordered
 @login_required(login_url="/accounts/login/")
 def my_orders(request):
     orders=Order.objects.filter(Q(user_id=request.user.id)).values().order_by("created_at")
@@ -29,7 +30,7 @@ def my_orders(request):
     return render(request,template,context)
 
 
-
+# saves products to the database
 @login_required(login_url="/accounts/login/")
 def product_add(request):
     """ Add a product to the store"""
@@ -54,6 +55,7 @@ def product_add(request):
     }
     return render(request, template, context)
 
+# updates product that have been saved to the database
 @login_required(login_url="/accounts/login/")
 def product_edit(request,product_id):
     if not request.user.is_staff:
@@ -79,6 +81,7 @@ def product_edit(request,product_id):
         template='product_edit.html'
         return render(request,template,context)
 
+# deletes products that have been saved to the database
 @login_required(login_url="/accounts/login/")
 def product_delete(request,product_id):
     if not request.user.is_staff:
