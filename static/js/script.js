@@ -39,7 +39,7 @@ function is_isbnNum(p){
 function isDecimal(input) {
     // Use the match() method with a regular expression
     // https://www.geeksforgeeks.org/javascript/how-to-validate-decimal-numbers-in-javascript/
-    const isDecimal = input.match(/^-?\d*\.?\d+$/);
+    const isDecimal = input.match(/^\d+(\.\d+)?$/);
     // Return true if it's a valid decimal number, otherwise return false
     return isDecimal !== null;
 }
@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", function(){
             let p=document.getElementById("price");
             
             if ( !isDecimal(p.value) ) {
-                alert("Invalid decimal number for price!");
+                alert("Invalid decimal or negative number for price!");
                 event.preventDefault();
                 return false;
             }
@@ -65,7 +65,7 @@ document.addEventListener("DOMContentLoaded", function(){
            
             let p3=document.getElementById("rating");
             if ( !isDecimal(p3.value) ){
-                alert("invalid rating");
+                alert("invalid or negative rating");
                 event.preventDefault();
                 return false;
             } 

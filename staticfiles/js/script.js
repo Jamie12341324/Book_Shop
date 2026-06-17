@@ -1,4 +1,3 @@
-// checks if a isbn number is valid
 function is_isbnNum(p){
 
     if (p.value=="0"){
@@ -36,20 +35,25 @@ function is_isbnNum(p){
     }
     return true;
 }
-// checks if a number is a decimal
+
 function isDecimal(input) {
-    const isDecimal = input.match(/^-?\d*\.?\d+$/);
+    // Use the match() method with a regular expression
+    // https://www.geeksforgeeks.org/javascript/how-to-validate-decimal-numbers-in-javascript/
+    const isDecimal = input.match(/^\d+(\.\d+)?$/);
     // Return true if it's a valid decimal number, otherwise return false
     return isDecimal !== null;
 }
-// adds an event listner which calls the isbn, price and rating valid checkers
+
 document.addEventListener("DOMContentLoaded", function(){
+    // alert("add listener");
     let button1=document.getElementById("save");
     if (button1){
         button1.addEventListener("click", function(event){
+            //alert("validate form");
             let p=document.getElementById("price");
+            
             if ( !isDecimal(p.value) ) {
-                alert("Invalid decimal number for price!");
+                alert("Invalid decimal or negative number for price!");
                 event.preventDefault();
                 return false;
             }
@@ -61,17 +65,23 @@ document.addEventListener("DOMContentLoaded", function(){
            
             let p3=document.getElementById("rating");
             if ( !isDecimal(p3.value) ){
-                alert("invalid rating");
+                alert("invalid or negative rating");
                 event.preventDefault();
                 return false;
             } 
+            let p4=document.getElementById("category");
+            if (p4.value == "0"){
+                alert("Please select a category");
+                event.preventDefault();
+                return false;
+            }
+            
             
         });
     }
-    // puts a image of a book with the isbn number on the add book form so you know if you got the number right 
+
     let isbn1=document.getElementById("isbn");
     if (isbn1){
-        // event listener with change from stack overflow
         isbn1.addEventListener("change", function(event){
             
             document.getElementById('book_image').src='https://covers.openlibrary.org/b/isbn/'+document.getElementById('isbn').value+'-M.jpg';
