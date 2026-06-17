@@ -23,7 +23,7 @@ function is_isbnNum(p){
         return false;
     }
     if(String(p.value).length>13){
-        alert("isbn number is too big - it should be a thousand or less");
+        alert("isbn number is too big - it should be a 13 numbers or less");
         p.value="0";
         p.focus();
         return false;

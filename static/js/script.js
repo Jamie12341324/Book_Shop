@@ -1,41 +1,3 @@
-function isNum(p){
-    if (p.value=="0"){
-        return true;
-    }
-    if(p.value.trim() == "" ){
-        alert("You cannot enter blank - the field has been reset to zero");
-        p.value="0";
-        p.focus();
-        return false;
-    }
-    if(p.value.trim().includes("-") ){
-        alert("Numbers cannot be negative or contain dashes");
-        p.value="0";
-        p.focus();
-        return false;
-    }
-    if(String(p.value).length>9){
-        alert("The number is far too big - it should be a thousand or less");
-        p.value="0";
-        p.focus();
-        return false;
-    }
-    if (isNaN(p.value)){
-        alert("The number is invalid");
-        p.value="0";
-        p.focus();
-        return false;
-    }
-
-    num = parseInt(p.value);
-    
-    if(num > 1000 || num < 0 ){
-        alert("The number cannot be greater than 1000 or negative");
-        p.value="0";
-        p.focus();
-        return false;
-    }   
-}
 function is_isbnNum(p){
 
     if (p.value=="0"){
@@ -60,7 +22,7 @@ function is_isbnNum(p){
         return false;
     }
     if(String(p.value).length>13){
-        alert("isbn number is too big - it should be a thousand or less");
+        alert("isbn number is too big - it should be a 13 numbers or less");
         p.value="0";
         p.focus();
         return false;
