@@ -32,6 +32,7 @@ also seperates from elements that are above with margin-top */
     background-color: rgba(0, 0, 0, 0.8);
     color:white;
 }
+/* provides space in the product detail page between the navbar and product div */
 .margin_extra{
     padding-top:25px;
     padding-bottom:25px;
@@ -47,7 +48,7 @@ also seperates from elements that are above with margin-top */
     color: #000000;
     font-weight: bold;
 }
-
+/* makes the navbar link for the current page bold */
 nav a.active {
     color: #2c5aa0;
     font-weight: bold;
