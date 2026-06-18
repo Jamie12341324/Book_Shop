@@ -1,3 +1,4 @@
+// tests to see if a input is a number
 function is_isbnNum(p){
 
     if (p.value=="0"){
@@ -35,7 +36,7 @@ function is_isbnNum(p){
     }
     return true;
 }
-
+//  tests to see if a number is a decimal
 function isDecimal(input) {
     // Use the match() method with a regular expression
     // https://www.geeksforgeeks.org/javascript/how-to-validate-decimal-numbers-in-javascript/
@@ -45,30 +46,30 @@ function isDecimal(input) {
 }
 
 document.addEventListener("DOMContentLoaded", function(){
-    // alert("add listener");
     let button1=document.getElementById("save");
     if (button1){
         button1.addEventListener("click", function(event){
-            //alert("validate form");
             let p=document.getElementById("price");
-            
+            // generate a message if the price is not a decimal and prevent the form from being submited
             if ( !isDecimal(p.value) ) {
                 alert("Invalid decimal or negative number for price!");
                 event.preventDefault();
                 return false;
             }
+            // generate a message if the isbn is not a number or a too large number and prevent the form from being submited
             let p2=document.getElementById("isbn");
             if ( !is_isbnNum(p2) ){
                 event.preventDefault();
                 return false;
             } 
-           
+            // generate a message if the rating is not a decimal and prevent the form from being submited
             let p3=document.getElementById("rating");
             if ( !isDecimal(p3.value) ){
                 alert("invalid or negative rating");
                 event.preventDefault();
                 return false;
             } 
+            // generate a message if the category has not been selected and prevent the form from being submited
             let p4=document.getElementById("category");
             if (p4.value == "0"){
                 alert("Please select a category");
@@ -79,7 +80,7 @@ document.addEventListener("DOMContentLoaded", function(){
             
         });
     }
-
+    // updates the soruce of the image tag when the isbn number changes
     let isbn1=document.getElementById("isbn");
     if (isbn1){
         isbn1.addEventListener("change", function(event){
@@ -88,8 +89,6 @@ document.addEventListener("DOMContentLoaded", function(){
             }
         )
     };
-
-    //return false;
 }
 
 );
