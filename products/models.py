@@ -18,7 +18,7 @@ class Category(models.Model):
         return self.friendly_name
 
 class Product(models.Model):
-    creator = models.ForeignKey(User, on_delete=models.CASCADE)
+    creator = models.ForeignKey(User,  null=True,on_delete=models.SET_NULL)
     category = models.ForeignKey('Category', null=True, blank=True, on_delete=models.SET_NULL)
     isbn = models.CharField(max_length=13)
     title = models.CharField(max_length=254)
@@ -44,8 +44,8 @@ class Order(models.Model):
         ('cancelled', 'Cancelled'),
 
     ]
-    user =models.ForeignKey(User, on_delete=models.PROTECT)
-    product           = models.ForeignKey(Product, on_delete=models.CASCADE,
+    user =models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
+    product           = models.ForeignKey(Product, null=True, on_delete=models.SET_NULL,
                             related_name='orders')
     stripe_session_id = models.CharField(max_length=200, unique=True)
     customer_email    = models.EmailField()
