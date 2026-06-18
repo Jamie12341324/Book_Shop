@@ -76,7 +76,7 @@ class Order(models.Model):
 
     def __str__(self):
 
-        return f"Order #{self.pk} — {self.product.title} ({self.status})"
+        return f"Order #{self.pk} — {self.title} ({self.status})"
  
     @property
 
